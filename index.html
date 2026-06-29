@@ -41,6 +41,10 @@
     padding: 24px;
     padding-left: clamp(20px, 8vw, 140px);
   }
+    .overlay.center-start{
+      justify-content:center;
+      padding-left: 24px;
+    }
   .hidden{ display:none !important; }
 
   .panel{
@@ -347,6 +351,18 @@
 <div class="journey" id="journey">
   <div class="journey-track"><div class="journey-fill" id="journey-fill"></div></div>
   <div class="journey-label" id="journey-label">Przebudzenie</div>
+</div>
+
+<!-- START GATE -->
+<div class="overlay center-start" id="screen-start">
+  <div class="panel" style="text-align:center;">
+    <p class="eyebrow" style="justify-content:center;">Rozdział 0 &middot; Brama Czapki</p>
+    <h1 class="title" style="text-align:center;">Najpierw odkryj tajemnice.</h1>
+    <p class="body-text" style="text-align:center;">Kliknij, a dopiero wtedy ruszy reszta historii, audio i magia.</p>
+    <div class="btn-row" style="justify-content:center;">
+      <button class="btn" id="btn-reveal-secrets">Odkryj tajemnice</button>
+    </div>
+  </div>
 </div>
 
 <!-- INTRO -->
@@ -720,6 +736,7 @@ triggerTalk(3000);
    UI FLOW
 --------------------------------------------------------- */
 const screens = {
+  start: document.getElementById('screen-start'),
   intro: document.getElementById('screen-intro'),
   ritual: document.getElementById('screen-ritual'),
   quiz: document.getElementById('screen-quiz'),
@@ -734,6 +751,7 @@ const introHatAudio = document.getElementById('intro-hat-audio');
 bgAudio.volume = 0.18;
 introHatAudio.volume = 0.65;
 let currentHouseAudio = null;
+let appStarted = false;
 
 const houseAudioSources = {
   gryffindor: 'gryfindor.mp3',
@@ -769,11 +787,13 @@ function showScreen(name){
   isLetterMode = name === 'letter';
   applyResponsiveHatPlacement();
 
-  bgAudio.play().catch(() => {
-    // Autoplay can be blocked until first user interaction.
-  });
+  if (appStarted) {
+    bgAudio.play().catch(() => {
+      // Autoplay can be blocked until first user interaction.
+    });
+  }
 
-  if (name === 'intro') {
+  if (name === 'intro' && appStarted) {
     introHatAudio.play().catch(() => {
       // Autoplay can be blocked until first user interaction.
     });
@@ -788,8 +808,8 @@ function showScreen(name){
   if (name === 'result') updateJourney(88, 'Werdykt Domu');
   if (name === 'letter') updateJourney(100, 'List Urodzinowy');
 }
-updateJourney(6, 'Przebudzenie Czapki');
-showScreen('intro');
+updateJourney(0, 'Brama Czapki');
+showScreen('start');
 
 const houseInfo = {
   gryffindor: {
@@ -1014,6 +1034,14 @@ function renderQuestion(){
     elOptions.appendChild(b);
   });
 }
+
+document.getElementById('btn-reveal-secrets').addEventListener('click', () => {
+  appStarted = true;
+  showScreen('intro');
+  updateJourney(6, 'Przebudzenie Czapki');
+  bgAudio.play().catch(() => {});
+  introHatAudio.play().catch(() => {});
+});
 
 document.getElementById('btn-start-quiz').addEventListener('click', () => {
   qIndex = 0;
