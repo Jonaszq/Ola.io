@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Czapka Wie Wszystko — dla Oli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night: #0b0e1a;
+    --night-2: #11152a;
+    --parchment: #ede3c8;
+    --parchment-2: #e2d4ab;
+    --gold: #c9a227;
+    --gold-bright: #e8c75a;
+    --burgundy: #5c1a1b;
+    --emerald: #1f4a3a;
+    --ink: #211a12;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%; overflow:hidden;
+    background:var(--night);
+    font-family:'EB Garamond', serif;
+    color:var(--parchment);
+  }
+  #stage{
+    position:fixed; inset:0; z-index:0;
+  }
+  #stage canvas{display:block;}
+
+  .vignette{
+    position:fixed; inset:0; z-index:1; pointer-events:none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 35%, rgba(0,0,0,0.65) 100%);
+  }
+
+  .overlay{
+    position:fixed; inset:0; z-index:5;
+    display:flex; align-items:center; justify-content:flex-start;
+    padding: 24px;
+    padding-left: clamp(20px, 8vw, 140px);
+  }
+  .hidden{ display:none !important; }
+
+  .panel{
+    position:relative;
+    width:min(640px, 94vw);
+    max-height: 86vh;
+    overflow-y:auto;
+    background: linear-gradient(180deg, var(--parchment) 0%, var(--parchment-2) 100%);
+    color:var(--ink);
+    border-radius: 6px;
+    padding: 42px 44px 38px;
+    box-shadow:
+      0 0 0 1px rgba(201,162,39,0.55),
+      0 0 0 8px rgba(11,14,26,0.35),
+      0 25px 60px rgba(0,0,0,0.55);
+    animation: riseIn 1.15s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .panel::before{
+    content:"";
+    position:absolute; inset:10px;
+    border:1px solid rgba(92,26,27,0.35);
+    pointer-events:none;
+    border-radius:3px;
+  }
+  @keyframes riseIn{
+    from{ opacity:0; transform: translateY(28px) scale(0.97); filter:blur(4px); }
+    to{ opacity:1; transform: translateY(0) scale(1); filter:blur(0); }
+  }
+
+  .eyebrow{
+    font-family:'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    margin: 0 0 10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::after{
+    content:""; flex:1; height:1px; background: linear-gradient(90deg, var(--burgundy), transparent);
+  }
+
+  h1.title{
+    font-family:'Cinzel Decorative', serif;
+    font-size: clamp(26px, 5vw, 38px);
+    line-height:1.1;
+    margin: 0 0 18px;
+    color: var(--burgundy);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+  }
+
+  p.lead{
+    font-size: 19px;
+    line-height: 1.55;
+    margin: 0 0 22px;
+    font-style: italic;
+  }
+  p.body-text{
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0 0 16px;
+  }
+
+  .btn{
+    font-family:'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: var(--burgundy);
+    color: var(--parchment);
+    border: 1px solid var(--gold);
+    padding: 13px 26px;
+    border-radius: 3px;
+    cursor:pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  }
+  .btn:hover{ background:#742224; transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.35);}
+  .btn:active{ transform: translateY(0); }
+  .btn.alt{ background: var(--emerald); }
+  .btn.alt:hover{ background:#285b49; }
+  .btn-row{ display:flex; justify-content:flex-end; gap:10px; margin-top: 22px; }
+
+  .journey{
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(760px, 92vw);
+    z-index: 9;
+    padding: 10px 12px;
+    border: 1px solid rgba(201,162,39,0.35);
+    border-radius: 6px;
+    background: rgba(11,14,26,0.62);
+    backdrop-filter: blur(4px);
+  }
+  .journey-track{
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(237,227,200,0.2);
+    overflow: hidden;
+  }
+  .journey-fill{
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+    transition: width 0.55s ease;
+  }
+  .journey-label{
+    margin-top: 7px;
+    font-family:'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(237,227,200,0.9);
+  }
+
+  .q-counter{
+    font-family:'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--emerald);
+    margin-bottom: 6px;
+  }
+  .q-text{
+    font-size: 21px;
+    line-height: 1.4;
+    margin: 0 0 22px;
+    font-weight: 600;
+  }
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left;
+    font-family:'EB Garamond', serif;
+    font-size: 17px;
+    background: rgba(92,26,27,0.06);
+    border: 1px solid rgba(92,26,27,0.35);
+    color: var(--ink);
+    padding: 12px 16px;
+    border-radius: 3px;
+    cursor:pointer;
+    transition: all 0.15s ease;
+  }
+  .opt:hover{
+    background: rgba(92,26,27,0.16);
+    border-color: var(--burgundy);
+    transform: translateX(3px);
+  }
+  .opt.chosen{
+    background: var(--gold);
+    border-color: var(--burgundy);
+    color: var(--ink);
+  }
+  .reaction{
+    margin-top:16px;
+    font-style:italic;
+    font-size:16px;
+    color: var(--emerald);
+    min-height: 24px;
+    opacity:0;
+    transition: opacity 0.4s ease;
+  }
+  .reaction.show{ opacity:1; }
+
+  .ritual-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-top: 14px;
+  }
+  .ritual-step{
+    text-align:left;
+    font-size:17px;
+    background: rgba(31,74,58,0.09);
+    border:1px solid rgba(31,74,58,0.35);
+    color:var(--ink);
+    padding: 12px 14px;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  .ritual-step.done{
+    background: rgba(201,162,39,0.18);
+    border-color: rgba(201,162,39,0.6);
+  }
+
+  .prophecy-log{
+    margin-top: 14px;
+    max-height: 180px;
+    overflow-y: auto;
+    border:1px solid rgba(92,26,27,0.35);
+    border-radius:4px;
+    padding: 10px;
+    background: rgba(92,26,27,0.06);
+  }
+  .prophecy-item{
+    font-size: 16px;
+    line-height: 1.45;
+    margin: 0 0 10px;
+    font-style: italic;
+  }
+
+  .house-badge{
+    font-family:'Cinzel Decorative', serif;
+    font-size: clamp(22px, 4.5vw, 30px);
+    color: var(--burgundy);
+    text-align:center;
+    margin: 4px 0 16px;
+    line-height:1.25;
+  }
+  .house-sub{
+    text-align:center;
+    font-style:italic;
+    margin-bottom:18px;
+    color: var(--emerald);
+  }
+
+  /* Final letter scroll */
+  #screen-letter{
+    justify-content:center;
+    padding-left: 24px;
+  }
+  #screen-letter .panel{
+    width:min(700px, 94vw);
+  }
+  .seal{
+    width:64px; height:64px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--gold-bright), var(--burgundy) 70%);
+    margin: 0 auto 14px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cinzel Decorative', serif;
+    color: var(--parchment);
+    font-size:22px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(0,0,0,0.25);
+    animation: sealStamp 0.6s 0.3s cubic-bezier(.3,1.6,.5,1) both;
+  }
+  @keyframes sealStamp{
+    from{ transform: scale(2.2) rotate(-20deg); opacity:0; }
+    to{ transform: scale(1) rotate(0deg); opacity:1; }
+  }
+
+  .letter-body{
+    max-height: 0;
+    overflow:hidden;
+    transition: max-height 1.9s cubic-bezier(.2,.8,.2,1);
+  }
+  .letter-body.open{ max-height: 900px; }
+  .letter-body p{
+    font-size:18px;
+    line-height:1.7;
+    margin: 0 0 14px;
+  }
+  .signature{
+    font-family:'Cinzel Decorative', serif;
+    font-size: 20px;
+    color: var(--burgundy);
+    text-align:right;
+    margin-top: 18px;
+  }
+
+  .skip-hint{
+    position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+    z-index:6;
+    font-family:'Cinzel', serif;
+    font-size:11px;
+    letter-spacing:2px;
+    color: rgba(237,227,200,0.55);
+    text-transform:uppercase;
+    pointer-events:none;
+  }
+
+  /* confetti */
+  .confetti-piece{
+    position:fixed; top:-20px; z-index:7; pointer-events:none;
+    border-radius:2px;
+    animation-name: fall;
+    animation-timing-function: linear;
+  }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(540deg); opacity:0.2; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .panel{ animation:none; }
+    .seal{ animation:none; }
+  }
+
+  @media (max-width: 900px){
+    .overlay{
+      justify-content:center;
+      padding-left: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+<div class="vignette"></div>
+<div class="skip-hint">Wielka Księga Olowych Tajemnic</div>
+<audio id="bg-audio" src="intro.mp3" preload="auto" loop></audio>
+<audio id="intro-hat-audio" src="hat.mp3" preload="auto"></audio>
+<div class="journey" id="journey">
+  <div class="journey-track"><div class="journey-fill" id="journey-fill"></div></div>
+  <div class="journey-label" id="journey-label">Przebudzenie</div>
+</div>
+
+<!-- INTRO -->
+<div class="overlay" id="screen-intro">
+  <div class="panel">
+    <p class="eyebrow">Rozdział I &middot; Przebudzenie Czapki</p>
+    <h1 class="title">Hmmm... kto mi tu zakłóca drzemkę?</h1>
+    <p class="lead">Czapka unosi powiekę z aksamitu i mruży oczy.</p>
+    <p class="body-text">„Czuję... fizjoterapeutkę. Czuję bibliotekę zaklęć powtarzaną na pamięć. Czuję głęboką, niewzruszoną <strong>nienawiść do ananasa</strong>, twardszą niż żelazo gobilinów.</p>
+    <p class="body-text">Mogę to być tylko jedna osoba na tym świecie. <strong>Ola.</strong> Dwadzieścia siedem lat krąży nad Twoją głową jak sowa, która zapomniała, gdzie ma list — więc zanim go dostaniesz, muszę sprawdzić, czy naprawdę Cię znam.”</p>
+    <div class="btn-row">
+      <button class="btn" id="btn-start-quiz">Przesłuchaj mnie, Czapko</button>
+    </div>
+  </div>
+</div>
+
+<!-- RITUAL -->
+<div class="overlay hidden" id="screen-ritual">
+  <div class="panel">
+    <p class="eyebrow">Rozdział II &middot; Rytuał Czapki</p>
+    <h1 class="title">Zanim zaczniemy, odprawmy mały rytuał.</h1>
+    <p class="body-text">Żeby Czapka gadała pełnym głosem, trzeba wykonać trzy drobne czynności.</p>
+    <div class="ritual-list">
+      <button class="ritual-step" id="ritual-step-1">1. Otrzep rondo z magicznego kurzu</button>
+      <button class="ritual-step" id="ritual-step-2">2. Przysięgnij brak ananasa w promieniu 5 metrów</button>
+      <button class="ritual-step" id="ritual-step-3">3. Wypowiedz zaklęcie: „Ola wie lepiej”</button>
+    </div>
+    <p class="reaction" id="ritual-reaction"></p>
+    <div class="btn-row">
+      <button class="btn hidden" id="btn-begin-quiz">Przejdź do pytań Czapki</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="overlay hidden" id="screen-quiz">
+  <div class="panel">
+    <p class="q-counter" id="q-counter">Runda glowna · Pytanie 1 / 6</p>
+    <p class="q-text" id="q-text"></p>
+    <div class="options" id="q-options"></div>
+    <p class="reaction" id="q-reaction"></p>
+    <div class="btn-row">
+      <button class="btn hidden" id="btn-next-q">Dalej</button>
+    </div>
+  </div>
+</div>
+
+<!-- BONUS INTRO -->
+<div class="overlay hidden" id="screen-bonus-intro">
+  <div class="panel">
+    <p class="eyebrow">Rozdział IV &middot; Dogrywka Czapki</p>
+    <h1 class="title">Werdykt jeszcze nie. Czas na dogrywkę.</h1>
+    <p class="body-text">Czapka chce dodatkowo sprawdzić charakter Oli. Możesz też losować krótkie przepowiednie ze zwoju.</p>
+    <div class="btn-row" style="justify-content:flex-start;">
+      <button class="btn alt" id="btn-draw-prophecy">Wylosuj przepowiednię</button>
+      <button class="btn" id="btn-start-bonus">Zacznij dogrywkę</button>
+    </div>
+    <div class="prophecy-log" id="prophecy-log"></div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="overlay hidden" id="screen-result">
+  <div class="panel">
+    <p class="eyebrow">Werdykt Czapki</p>
+    <p class="house-badge" id="house-title"></p>
+    <p class="house-sub" id="house-sub"></p>
+    <p class="body-text" id="house-text"></p>
+    <div class="btn-row">
+      <button class="btn" id="btn-show-letter">Odbierz to, po co przyszłaś</button>
+    </div>
+  </div>
+</div>
+
+<!-- LETTER -->
+<div class="overlay hidden" id="screen-letter">
+  <div class="panel">
+    <div class="seal">27</div>
+    <p class="eyebrow" style="text-align:center; justify-content:center;">Pieczęć złamana</p>
+    <h1 class="title" style="text-align:center;">Dla Oli, w dniu Jej 27. urodzin</h1>
+    <div class="letter-body" id="letter-body">
+      <p>Olu,</p>
+      <p>27 lat to wiek, w którym oficjalnie wolno Ci narzekać na kolana — choć jako fizjoterapeutka i tak wiesz o nich więcej niż większość ludzi wie o własnym życiu. To wiek, w którym imprezowanie do drugiej w nocy zamienia się w twardy plan „śpię o dziesiątej, bo rano mam pacjenta”, i nikt Cię o to nie wini.</p>
+      <p>Gdybyś naprawdę dostała list z Hogwartu, pewnie i tak byś go odesłała z poprawkami do ergonomii siedzenia na miotle. A jeśli ktoś poda Ci kiedyś ananasa — w jakiejkolwiek formie, na czymkolwiek — wiedz, że stoję za Tobą murem w tej wojnie, niezależnie od tego, ile osób próbuje Cię przekonać, że to „tylko owoc”.</p>
+      <p>Życzę Ci roku pełnego dobrych filmów, scen bez nudnych dłużyzn, pacjentów którzy faktycznie robią zalecone ćwiczenia, i zero ananasa na horyzoncie. Wszystkiego najlepszego, Olu — jesteś z gatunku ludzi, dla których chce się robić głupie strony z czapkami o trzeciej w nocy.</p>
+      <p class="signature">Twój brat, Jonasz</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+/* ---------------------------------------------------------
+  3D SORTING HAT MODEL
+--------------------------------------------------------- */
+const stage = document.getElementById('stage');
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0b0e1a, 0.05);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 100);
+camera.position.set(0, 0.9, 5.0);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:false });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+stage.appendChild(renderer.domElement);
+
+// lights
+scene.add(new THREE.AmbientLight(0x6b677b, 1.2));
+scene.add(new THREE.HemisphereLight(0xfff2d8, 0x10131f, 1.5));
+const goldLight = new THREE.PointLight(0xe8c75a, 2.2, 18, 2);
+goldLight.position.set(3, 4, 4);
+scene.add(goldLight);
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+keyLight.position.set(2, 4, 6);
+scene.add(keyLight);
+const rimLight = new THREE.PointLight(0x3a6ea5, 1.4, 20, 2);
+rimLight.position.set(-4, 1, -3);
+scene.add(rimLight);
+const underLight = new THREE.PointLight(0x5c1a1b, 1.0, 10, 2);
+underLight.position.set(0, -2, 2);
+scene.add(underLight);
+
+// starfield particles
+const starGeo = new THREE.BufferGeometry();
+const starCount = 700;
+const starPos = new Float32Array(starCount*3);
+for(let i=0;i<starCount;i++){
+  const r = 14 + Math.random()*22;
+  const theta = Math.random()*Math.PI*2;
+  const phi = Math.acos((Math.random()*2)-1);
+  starPos[i*3]   = r*Math.sin(phi)*Math.cos(theta);
+  starPos[i*3+1] = r*Math.cos(phi)*0.6;
+  starPos[i*3+2] = r*Math.sin(phi)*Math.sin(theta) - 4;
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos,3));
+const starMat = new THREE.PointsMaterial({ color:0xe8c75a, size:0.06, transparent:true, opacity:0.75 });
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
+
+// floating embers near hat
+const emberGeo = new THREE.BufferGeometry();
+const emberCount = 90;
+const emberPos = new Float32Array(emberCount*3);
+for(let i=0;i<emberCount;i++){
+  emberPos[i*3] = (Math.random()-0.5)*5;
+  emberPos[i*3+1] = Math.random()*4 - 1;
+  emberPos[i*3+2] = (Math.random()-0.5)*5;
+}
+emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPos,3));
+const emberMat = new THREE.PointsMaterial({ color:0xc9a227, size:0.045, transparent:true, opacity:0.9 });
+const embers = new THREE.Points(emberGeo, emberMat);
+scene.add(embers);
+
+// --- Hat group ---
+const hat = new THREE.Group();
+scene.add(hat);
+let hatReady = false;
+let hatBaseScale = 1;
+let hatHomeX = 2.15;
+let hatHomeY = -0.55;
+let hatTargetX = hatHomeX;
+let hatTargetY = hatHomeY;
+let hatCurrentX = hatHomeX;
+let hatCurrentY = hatHomeY;
+let isLetterMode = false;
+
+function applyResponsiveHatPlacement(){
+  const isMobile = window.innerWidth < 900;
+  if (isLetterMode) {
+    hatHomeX = 0;
+    hatHomeY = isMobile ? -0.95 : -0.82;
+  } else {
+    hatHomeX = isMobile ? 1.05 : 1.85;
+    hatHomeY = isMobile ? -0.62 : -0.54;
+  }
+  hatTargetX = hatHomeX;
+  hatTargetY = hatHomeY;
+}
+
+const gltfLoader = new THREE.GLTFLoader();
+const hatModelCandidates = [
+  'sorting_hat.glb',
+  './sorting_hat.glb',
+  new URL('sorting_hat.glb', window.location.href).href,
+];
+
+function showHatLoadHint(message){
+  const hint = document.createElement('div');
+  hint.textContent = message || 'Nie udalo sie wczytac sorting_hat.glb. Otworz strone przez lokalny serwer (np. Live Server).';
+  hint.style.position = 'fixed';
+  hint.style.right = '12px';
+  hint.style.bottom = '12px';
+  hint.style.zIndex = '50';
+  hint.style.maxWidth = '360px';
+  hint.style.padding = '10px 12px';
+  hint.style.background = 'rgba(20, 8, 8, 0.9)';
+  hint.style.color = '#ede3c8';
+  hint.style.fontSize = '12px';
+  hint.style.lineHeight = '1.4';
+  hint.style.border = '1px solid rgba(201,162,39,0.6)';
+  hint.style.borderRadius = '4px';
+  document.body.appendChild(hint);
+}
+
+function addFallbackHatMesh(){
+  const bodyMat = new THREE.MeshStandardMaterial({ color:0x5a2f2a, roughness:0.8, metalness:0.1 });
+  const brimMat = new THREE.MeshStandardMaterial({ color:0x4a2521, roughness:0.9, metalness:0.05 });
+
+  const cone = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.8, 28, 1), bodyMat);
+  cone.position.y = 1.0;
+  cone.rotation.z = -0.18;
+
+  const brim = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.2, 0.14, 40), brimMat);
+  brim.position.y = 0.12;
+
+  const fallback = new THREE.Group();
+  fallback.add(cone, brim);
+  fallback.scale.setScalar(1.8);
+
+  hat.add(fallback);
+  applyResponsiveHatPlacement();
+  hat.position.z = 0;
+  hat.rotation.x = -0.04;
+  hatBaseScale = 1;
+  hatReady = true;
+}
+
+function loadHatModel(candidateIndex = 0){
+  if (candidateIndex >= hatModelCandidates.length) {
+    console.error('Nie udało się wczytać sorting_hat.glb z żadnej ścieżki');
+    showHatLoadHint();
+    addFallbackHatMesh();
+    return;
+  }
+
+  gltfLoader.load(
+    hatModelCandidates[candidateIndex],
+    (gltf) => {
+      const hatModel = gltf.scene;
+      hatModel.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      const box = new THREE.Box3().setFromObject(hatModel);
+      const size = new THREE.Vector3();
+      const center = new THREE.Vector3();
+      box.getSize(size);
+      box.getCenter(center);
+
+      const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+      const targetSize = 20.0;
+      const scale = targetSize / maxAxis;
+      hatBaseScale = scale;
+      hatModel.scale.setScalar(scale);
+      hatModel.position.sub(center.multiplyScalar(scale));
+
+      const scaledBox = new THREE.Box3().setFromObject(hatModel);
+      hatModel.position.y -= scaledBox.min.y;
+
+      hat.add(hatModel);
+      applyResponsiveHatPlacement();
+      hat.position.z = 0;
+      hat.rotation.x = -0.04;
+      hatReady = true;
+    },
+    undefined,
+    () => {
+      loadHatModel(candidateIndex + 1);
+    }
+  );
+}
+
+const canUseXhrForModel = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+if (canUseXhrForModel) {
+  loadHatModel();
+} else {
+  showHatLoadHint('Tryb file:// blokuje loading modelu .glb (CORS). Uruchom przez lokalny serwer (Live Server), a na razie pokazuje fallback.');
+  addFallbackHatMesh();
+}
+
+// ground shadow disc (purely decorative, no real shadows needed)
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(2.2, 32),
+  new THREE.MeshBasicMaterial({ color:0x000000, transparent:true, opacity:0.35 })
+);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -1.55;
+scene.add(ground);
+
+// resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  applyResponsiveHatPlacement();
+});
+
+applyResponsiveHatPlacement();
+hatCurrentX = hatTargetX;
+hatCurrentY = hatTargetY;
+hat.position.x = hatCurrentX;
+hat.position.y = hatCurrentY;
+
+// animation state
+let talkPulse = 0;     // 0..1 mouth open amount target
+let bobExtra = 0;
+let wobble = 0;
+let clock = new THREE.Clock();
+
+function triggerTalk(durationMs){
+  const start = performance.now();
+  function step(){
+    const t = performance.now() - start;
+    talkPulse = (Math.sin(t*0.02)+1)/2 * (t < durationMs ? 1 : 0);
+    if(t < durationMs) requestAnimationFrame(step);
+    else talkPulse = 0;
+  }
+  step();
+}
+function triggerWobble(){
+  wobble = 1;
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  const t = clock.getElapsedTime();
+
+  // camera subtle drift (keeps hat visible instead of full orbit)
+  const baseCamX = window.innerWidth < 900 ? 0.1 : 0.25;
+  const baseCamZ = window.innerWidth < 900 ? 5.0 : 5.2;
+  camera.position.x = baseCamX + Math.sin(t*0.22)*0.15;
+  camera.position.z = baseCamZ + Math.cos(t*0.14)*0.12;
+  camera.position.y = 1.0 + Math.sin(t*0.26)*0.12;
+  camera.lookAt(0, 0.1, 0);
+
+  // hat idle bob + tilt
+  hatCurrentX += (hatTargetX - hatCurrentX) * 0.055;
+  hatCurrentY += (hatTargetY - hatCurrentY) * 0.055;
+  hat.position.x = hatCurrentX;
+  hat.position.y = hatCurrentY + Math.sin(t*0.8)*0.045 + bobExtra;
+  hat.rotation.y = Math.PI + Math.sin(t*0.35)*0.14;
+  hat.rotation.z = Math.sin(t*0.5)*0.022 + wobble*Math.sin(t*10)*0.09;
+  wobble *= 0.94;
+
+  if (hatReady) {
+    const talkOffset = 1 + talkPulse * 0.02;
+    hat.scale.setScalar(hatBaseScale * talkOffset);
+  }
+
+  stars.rotation.y = t*0.01;
+  embers.rotation.y = t*0.02;
+  const emberArr = embers.geometry.attributes.position.array;
+  for(let i=0;i<emberCount;i++){
+    emberArr[i*3+1] += 0.002;
+    if(emberArr[i*3+1] > 4) emberArr[i*3+1] = -1;
+  }
+  embers.geometry.attributes.position.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+animate();
+triggerTalk(3000);
+
+/* ---------------------------------------------------------
+   UI FLOW
+--------------------------------------------------------- */
+const screens = {
+  intro: document.getElementById('screen-intro'),
+  ritual: document.getElementById('screen-ritual'),
+  quiz: document.getElementById('screen-quiz'),
+  bonusIntro: document.getElementById('screen-bonus-intro'),
+  result: document.getElementById('screen-result'),
+  letter: document.getElementById('screen-letter'),
+};
+const journeyFill = document.getElementById('journey-fill');
+const journeyLabel = document.getElementById('journey-label');
+const bgAudio = document.getElementById('bg-audio');
+const introHatAudio = document.getElementById('intro-hat-audio');
+bgAudio.volume = 0.18;
+introHatAudio.volume = 0.65;
+let currentHouseAudio = null;
+
+const houseAudioSources = {
+  gryffindor: 'gryfindor.mp3',
+  hufflepuff: 'hufflepuff.mp3',
+  ravenclaw: 'ravenclaw.mp3',
+  slytherin: 'slytherin.mp3',
+};
+
+function playHouseAudio(houseKey){
+  const source = houseAudioSources[houseKey];
+  if (!source) return;
+
+  if (currentHouseAudio) {
+    currentHouseAudio.pause();
+    currentHouseAudio.currentTime = 0;
+  }
+
+  currentHouseAudio = new Audio(source);
+  currentHouseAudio.volume = 0.75;
+  currentHouseAudio.play().catch(() => {
+    // Audio can still be blocked in some browsers until user interaction completes.
+  });
+}
+
+function updateJourney(percent, label){
+  journeyFill.style.width = `${Math.max(0, Math.min(100, percent))}%`;
+  journeyLabel.textContent = label;
+}
+
+function showScreen(name){
+  Object.values(screens).forEach(s => s.classList.add('hidden'));
+  screens[name].classList.remove('hidden');
+  isLetterMode = name === 'letter';
+  applyResponsiveHatPlacement();
+
+  bgAudio.play().catch(() => {
+    // Autoplay can be blocked until first user interaction.
+  });
+
+  if (name === 'intro') {
+    introHatAudio.play().catch(() => {
+      // Autoplay can be blocked until first user interaction.
+    });
+  } else {
+    introHatAudio.pause();
+    introHatAudio.currentTime = 0;
+  }
+
+  if (name === 'intro') updateJourney(6, 'Przebudzenie Czapki');
+  if (name === 'ritual') updateJourney(20, 'Rytuał Rozpoczęcia');
+  if (name === 'bonusIntro') updateJourney(68, 'Dogrywka Czapki');
+  if (name === 'result') updateJourney(88, 'Werdykt Domu');
+  if (name === 'letter') updateJourney(100, 'List Urodzinowy');
+}
+updateJourney(6, 'Przebudzenie Czapki');
+showScreen('intro');
+
+const houseInfo = {
+  gryffindor: {
+    name: 'Gryffindor',
+    sub: 'Odwaga, serce i energia do działania.',
+    text: 'W Oli buzują odwaga i charakter. Potrafi wejść w trudną sytuację bez mrugnięcia okiem, a kiedy trzeba, bierze sprawy w swoje ręce i niesie ludziom realną pomoc.'
+  },
+  hufflepuff: {
+    name: 'Hufflepuff',
+    sub: 'Lojalność, cierpliwość i wielkie ciepło.',
+    text: 'To dom ludzi, którzy robią dobro konsekwentnie i bez fanfar. Ola ma w sobie dokładnie tę energię: cierpliwą, wspierającą i niezawodną.'
+  },
+  ravenclaw: {
+    name: 'Ravenclaw',
+    sub: 'Umysł, wiedza i błyskotliwość.',
+    text: 'Czapka słyszy tu głód wiedzy i świetną intuicję. Ola łączy logiczne myślenie z praktyką, a jej głowa pracuje szybciej niż większość zaklęć.'
+  },
+  slytherin: {
+    name: 'Slytherin',
+    sub: 'Ambicja, strategia i skuteczność.',
+    text: 'W Oli jest też konkret i celność działania. Kiedy wyznaczy kierunek, potrafi iść po swoje mądrze, konsekwentnie i z klasą.'
+  }
+};
+
+const mainQuestions = [
+  {
+    text: 'Pacjent mówi: „Nie dam rady”. Co robi Ola najczęściej?',
+    options: [
+      { text: 'Motywuje i wyciąga z niego dodatkowe 2 powtórzenia.', house: 'gryffindor' },
+      { text: 'Spokojnie tłumaczy i cierpliwie prowadzi krok po kroku.', house: 'hufflepuff' },
+      { text: 'Szybko analizuje problem i zmienia plan na skuteczniejszy.', house: 'ravenclaw' },
+      { text: 'Ustala jasny cel i plan wykonania bez wymówek.', house: 'slytherin' },
+    ],
+    reaction: 'Czapka mruczy: „Tak, to brzmi jak profesjonalizm najwyższego poziomu.”'
+  },
+  {
+    text: 'Co najlepiej opisuje stosunek Oli do ananasa?',
+    options: [
+      { text: 'To sprawa honoru i trzeba bronić zasad.', house: 'gryffindor' },
+      { text: 'Uprzejmie, ale stanowczo: „nie, dziękuję”.', house: 'hufflepuff' },
+      { text: 'Ma listę argumentów, czemu to kulinarny błąd.', house: 'ravenclaw' },
+      { text: 'To wróg strategiczny numer jeden.', house: 'slytherin' },
+    ],
+    reaction: 'Czapka prycha: „W tej kwestii nie ma miejsca na kompromisy.”'
+  },
+  {
+    text: 'Wieczór filmowy z Olą to zwykle...',
+    options: [
+      { text: 'Emocje, ulubione sceny i pełne zaangażowanie.', house: 'gryffindor' },
+      { text: 'Komfort, koc i atmosfera „wszyscy mile widziani”.', house: 'hufflepuff' },
+      { text: 'Analiza fabuły i wychwytywanie detali.', house: 'ravenclaw' },
+      { text: 'Seans według dobrze ułożonego planu, zero chaosu.', house: 'slytherin' },
+    ],
+    reaction: 'Czapka kiwa rondem: „Kino to też sztuka charakteru.”'
+  },
+  {
+    text: 'Największa siła Oli w pracy to...',
+    options: [
+      { text: 'Odwaga w prowadzeniu trudnych przypadków.', house: 'gryffindor' },
+      { text: 'Empatia i cierpliwość wobec każdego pacjenta.', house: 'hufflepuff' },
+      { text: 'Wiedza, precyzja i szybkie łączenie faktów.', house: 'ravenclaw' },
+      { text: 'Konsekwencja i świetna organizacja procesu terapii.', house: 'slytherin' },
+    ],
+    reaction: '„Oho,” szepcze Czapka, „tu widać prawdziwe rzemiosło.”'
+  },
+  {
+    text: 'Gdy grupa się gubi, Ola najczęściej...',
+    options: [
+      { text: 'Przejmuje inicjatywę i prowadzi dalej.', house: 'gryffindor' },
+      { text: 'Dba, by nikt nie został w tyle.', house: 'hufflepuff' },
+      { text: 'Porządkuje informacje i wyznacza sensowny kierunek.', house: 'ravenclaw' },
+      { text: 'Wyznacza role i pilnuje realizacji celu.', house: 'slytherin' },
+    ],
+    reaction: 'Czapka notuje coś pod rondem. Wygląda na zachwyconą.'
+  },
+  {
+    text: 'Które zdanie najbardziej pasuje do Oli?',
+    options: [
+      { text: '„Serce odważne, nawet kiedy trudno.”', house: 'gryffindor' },
+      { text: '„Dobro i lojalność ponad wszystko.”', house: 'hufflepuff' },
+      { text: '„Myślę szybko, działam mądrze.”', house: 'ravenclaw' },
+      { text: '„Mam cel i wiem, jak go osiągnąć.”', house: 'slytherin' },
+    ],
+    reaction: 'Ostatnie pytanie, a Czapka już prawie zna werdykt.'
+  },
+];
+
+const bonusQuestions = [
+  {
+    text: 'Co Ola zrobi najpierw, gdy plan dnia się rozsypie?',
+    options: [
+      { text: 'Zbierze ekipę i ruszy do działania od razu.', house: 'gryffindor' },
+      { text: 'Najpierw upewni się, że każdy wie, co robić.', house: 'hufflepuff' },
+      { text: 'Rozpisze szybki, sensowny plan B.', house: 'ravenclaw' },
+      { text: 'Ustawi priorytety i zamknie temat krok po kroku.', house: 'slytherin' },
+    ],
+    reaction: 'Dogrywka zaczyna się konkretnie. Czapka uśmiecha się pod rondem.'
+  },
+  {
+    text: 'Które hasło najlepiej oddaje styl Oli?',
+    options: [
+      { text: '„Najpierw serce, potem reszta.”', house: 'gryffindor' },
+      { text: '„Spokojnie, damy radę razem.”', house: 'hufflepuff' },
+      { text: '„Pomyślmy i zróbmy to mądrze.”', house: 'ravenclaw' },
+      { text: '„Cel jest jasny, działamy.”', house: 'slytherin' },
+    ],
+    reaction: 'Pióro Czapki drży. To pytanie dużo waży.'
+  },
+  {
+    text: 'Ostatni test: co robi Ola, gdy ktoś w nią naprawdę wierzy?',
+    options: [
+      { text: 'Daje z siebie jeszcze więcej odwagi.', house: 'gryffindor' },
+      { text: 'Oddaje to wsparcie z podwójną siłą.', house: 'hufflepuff' },
+      { text: 'Przekuwa to w lepsze decyzje i rozwój.', house: 'ravenclaw' },
+      { text: 'Idzie po wynik bez oglądania się za siebie.', house: 'slytherin' },
+    ],
+    reaction: 'Czapka milknie na sekundę. Werdykt jest już prawie gotowy.'
+  },
+];
+
+const prophecies = [
+  '„Widziałam kolana, które będą wdzięczne Oli jeszcze przez dekadę.”',
+  '„Widziałam filmowy wieczór bez ananasa i bez spoilerów.”',
+  '„Widziałam pacjentów, którzy naprawdę zrobią ćwiczenia domowe.”',
+  '„Widziałam rok, w którym wszystko klika dokładnie jak powinno.”',
+  '„Widziałam Olę, która łączy serce, wiedzę i upór w jedną supermoc.”',
+];
+
+let qIndex = 0;
+let activeQuestions = mainQuestions;
+let quizRound = 'main';
+let houseScore = {
+  gryffindor: 0,
+  hufflepuff: 0,
+  ravenclaw: 0,
+  slytherin: 0,
+};
+const elCounter = document.getElementById('q-counter');
+const elText = document.getElementById('q-text');
+const elOptions = document.getElementById('q-options');
+const elReaction = document.getElementById('q-reaction');
+const btnNext = document.getElementById('btn-next-q');
+const ritualReaction = document.getElementById('ritual-reaction');
+const btnBeginQuiz = document.getElementById('btn-begin-quiz');
+const prophecyLog = document.getElementById('prophecy-log');
+
+const ritualState = {
+  1: false,
+  2: false,
+  3: false,
+};
+
+function updateQuizJourney(){
+  if (quizRound === 'main') {
+    const p = 28 + ((qIndex + 1) / mainQuestions.length) * 26;
+    updateJourney(p, `Pytania glowne ${qIndex + 1}/${mainQuestions.length}`);
+  } else {
+    const p = 70 + ((qIndex + 1) / bonusQuestions.length) * 14;
+    updateJourney(p, `Dogrywka ${qIndex + 1}/${bonusQuestions.length}`);
+  }
+}
+
+function resetHouseScores(){
+  houseScore = {
+    gryffindor: 0,
+    hufflepuff: 0,
+    ravenclaw: 0,
+    slytherin: 0,
+  };
+}
+
+function startMainQuiz(){
+  quizRound = 'main';
+  activeQuestions = mainQuestions;
+  qIndex = 0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function startBonusQuiz(){
+  quizRound = 'bonus';
+  activeQuestions = bonusQuestions;
+  qIndex = 0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function drawProphecy(){
+  const line = prophecies[Math.floor(Math.random() * prophecies.length)];
+  const p = document.createElement('p');
+  p.className = 'prophecy-item';
+  p.textContent = line;
+  prophecyLog.prepend(p);
+  while (prophecyLog.children.length > 8) prophecyLog.lastChild.remove();
+}
+
+function renderQuestion(){
+  const q = activeQuestions[qIndex];
+  const roundLabel = quizRound === 'main' ? 'Runda glowna' : 'Dogrywka';
+  elCounter.textContent = `${roundLabel} · Pytanie ${qIndex+1} / ${activeQuestions.length}`;
+  elText.textContent = q.text;
+  elOptions.innerHTML = '';
+  elReaction.classList.remove('show');
+  elReaction.textContent = '';
+  btnNext.classList.add('hidden');
+  updateQuizJourney();
+
+  q.options.forEach((opt) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.textContent = opt.text;
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.opt').forEach(o => o.disabled = true);
+      b.classList.add('chosen');
+      houseScore[opt.house] += 1;
+      triggerWobble();
+      triggerTalk(1600);
+      elReaction.textContent = q.reaction;
+      requestAnimationFrame(() => elReaction.classList.add('show'));
+      btnNext.classList.remove('hidden');
+    });
+    elOptions.appendChild(b);
+  });
+}
+
+document.getElementById('btn-start-quiz').addEventListener('click', () => {
+  qIndex = 0;
+  resetHouseScores();
+  Object.keys(ritualState).forEach((k) => ritualState[k] = false);
+  ['ritual-step-1', 'ritual-step-2', 'ritual-step-3'].forEach((id) => {
+    const el = document.getElementById(id);
+    el.classList.remove('done');
+    el.disabled = false;
+  });
+  ritualReaction.classList.remove('show');
+  ritualReaction.textContent = '';
+  btnBeginQuiz.classList.add('hidden');
+  triggerTalk(1200);
+  showScreen('ritual');
+});
+
+['ritual-step-1', 'ritual-step-2', 'ritual-step-3'].forEach((id, idx) => {
+  document.getElementById(id).addEventListener('click', (ev) => {
+    const stepNo = idx + 1;
+    ritualState[stepNo] = true;
+    ev.currentTarget.classList.add('done');
+    ev.currentTarget.disabled = true;
+    ritualReaction.textContent = ['Kurz opadl. Czapka oddycha lzej.', 'Przysiega przyjeta. Ananas nie ma wstepu.', 'Zaklecie zadzialalo. Czapka jest gotowa.'][idx];
+    ritualReaction.classList.add('show');
+    triggerTalk(900);
+    triggerWobble();
+    const allDone = ritualState[1] && ritualState[2] && ritualState[3];
+    if (allDone) btnBeginQuiz.classList.remove('hidden');
+  });
+});
+
+btnBeginQuiz.addEventListener('click', () => {
+  startMainQuiz();
+});
+
+document.getElementById('btn-draw-prophecy').addEventListener('click', () => {
+  drawProphecy();
+  triggerTalk(1000);
+});
+
+document.getElementById('btn-start-bonus').addEventListener('click', () => {
+  startBonusQuiz();
+  triggerTalk(1100);
+});
+
+btnNext.addEventListener('click', () => {
+  qIndex++;
+  if(qIndex < activeQuestions.length){
+    renderQuestion();
+  } else {
+    if (quizRound === 'main') {
+      showScreen('bonusIntro');
+      updateJourney(66, 'Zwój Przepowiedni');
+    } else {
+      showResult();
+    }
+  }
+});
+
+function showResult(){
+  triggerWobble();
+  triggerTalk(2200);
+  const title = document.getElementById('house-title');
+  const sub = document.getElementById('house-sub');
+  const text = document.getElementById('house-text');
+  const totalAsked = mainQuestions.length + bonusQuestions.length;
+
+  const tieOrder = ['ravenclaw', 'hufflepuff', 'gryffindor', 'slytherin'];
+  let bestHouse = tieOrder[0];
+  let bestScore = -1;
+  tieOrder.forEach((houseKey) => {
+    if (houseScore[houseKey] > bestScore) {
+      bestScore = houseScore[houseKey];
+      bestHouse = houseKey;
+    }
+  });
+
+  const finalHouse = houseInfo[bestHouse];
+  let bodyText = finalHouse.text;
+  if (bestScore >= 4) {
+    bodyText += ' Werdykt jest wyjątkowo mocny — Czapka nie ma żadnych wątpliwości.';
+  } else if (bestScore <= 2) {
+    bodyText += ' Wynik był wyrównany, bo Ola ma cechy kilku domów naraz.';
+  }
+
+  title.textContent = `Dom Oli: ${finalHouse.name}`;
+  sub.textContent = `${finalHouse.sub} Wynik: ${bestScore}/${totalAsked}`;
+  text.textContent = bodyText;
+  showScreen('result');
+  playHouseAudio(bestHouse);
+}
+
+document.getElementById('btn-show-letter').addEventListener('click', () => {
+  showScreen('letter');
+  triggerTalk(1400);
+  setTimeout(() => {
+    document.getElementById('letter-body').classList.add('open');
+    launchConfetti();
+  }, 900);
+});
+
+function launchConfetti(){
+  const colors = ['#c9a227', '#5c1a1b', '#1f4a3a', '#ede3c8'];
+  for(let i=0;i<70;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const size = 6 + Math.random()*6;
+    piece.style.width = size+'px';
+    piece.style.height = (size*0.4)+'px';
+    piece.style.left = (Math.random()*100)+'vw';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration = (4.0 + Math.random()*3.2)+'s';
+    piece.style.animationDelay = (Math.random()*1.6)+'s';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 8500);
+  }
+}
+</script>
+</body>
+</html>
