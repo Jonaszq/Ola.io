@@ -247,6 +247,340 @@
     font-style: italic;
   }
 
+  .lumos-screen{
+    position: relative;
+    width: 100vw;
+    min-height: 100vh;
+    max-height: none;
+    border-radius: 0;
+    background: #020202;
+    color: #f6edcf;
+    box-shadow: none;
+    overflow: hidden;
+  }
+  .lumos-screen.revealed{
+    background: radial-gradient(circle at 50% 50%, rgba(255,244,193,0.18) 0 18%, rgba(8,8,8,0.94) 56%), #050505;
+    color: #fff4d8;
+  }
+  .lumos-screen::before{
+    display:none;
+  }
+  .lumos-screen::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(circle 220px at var(--lumos-x, 50%) var(--lumos-y, 32%), rgba(255,244,193,0.58) 0 42px, rgba(255,244,193,0.16) 75px, rgba(255,244,193,0.05) 112px, rgba(0,0,0,0.52) 170px, rgba(0,0,0,0.96) 260px),
+      radial-gradient(circle 28% at 50% 50%, rgba(255,244,193,0.34), rgba(0,0,0,0) 62%),
+      rgba(0,0,0,0.24);
+    transition: background 0.06s linear;
+    z-index: 2;
+  }
+  .lumos-screen.revealed::after{
+    background:
+      radial-gradient(circle 32vw at 50% 50%, rgba(255,244,193,0.9) 0 12%, rgba(255,244,193,0.52) 20%, rgba(255,244,193,0.20) 34%, rgba(255,244,193,0.08) 48%, rgba(0,0,0,0) 67%),
+      radial-gradient(circle 56vw at 50% 50%, rgba(255,244,193,0.14) 0 18%, rgba(0,0,0,0) 56%),
+      rgba(255,244,193,0.08);
+    opacity: 1;
+  }
+  #screen-lumos{
+    justify-content:stretch;
+    align-items:stretch;
+    padding:0;
+  }
+  #screen-lumos .panel{
+    width:100vw;
+    max-height:none;
+    min-height:100vh;
+    padding: clamp(24px, 4vw, 48px);
+    border-radius: 0;
+    background: transparent;
+    color: #f6edcf;
+  }
+  .lumos-screen.revealed .panel{
+    color: var(--ink);
+  }
+  #screen-lumos .panel > *{
+    position:relative;
+    z-index:0;
+  }
+  .lumos-screen.revealed .lumos-hint,
+  .lumos-screen.revealed .lumos-result,
+  .lumos-screen.revealed .lumos-title,
+  .lumos-screen.revealed .lumos-sub,
+  .lumos-screen.revealed .eyebrow,
+  .lumos-screen.revealed .title,
+  .lumos-screen.revealed .body-text,
+  .lumos-screen.revealed .spell-status{
+    color: #fff4d8 !important;
+    text-shadow: 0 0 10px rgba(255,244,193,0.18), 0 1px 0 rgba(0,0,0,0.65);
+  }
+  .lumos-screen.revealed .spell-input{
+    background: rgba(255,255,255,0.05);
+    color: #fff4d8;
+    border-color: rgba(255,244,193,0.24);
+  }
+  .lumos-screen.revealed .spell-input:focus{
+    border-color: rgba(255,244,193,0.72);
+    box-shadow: 0 0 0 3px rgba(255,244,193,0.14);
+  }
+  .lumos-screen.revealed .spell-row .btn,
+  .lumos-screen.revealed .spell-row .btn{
+    background: rgba(92,26,27,0.92);
+    color: var(--parchment);
+  }
+  .lumos-screen.revealed .spell-row,
+  .lumos-screen.revealed .spell-status{
+    position: relative;
+    z-index: 2;
+  }
+  .lumos-hint,
+  .lumos-result,
+  .lumos-title,
+  .lumos-sub{
+    color: #f6edcf;
+    z-index: 2;
+  }
+  .lumos-hint{
+    font-size: 18px;
+    line-height: 1.55;
+    margin: 0 0 18px;
+  }
+  .spell-row{
+    display:flex;
+    gap: 10px;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top: 14px;
+  }
+  .spell-input{
+    flex: 1 1 180px;
+    min-width: 0;
+    background: rgba(255,255,255,0.04);
+    color: #fff4d8;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 4px;
+    padding: 13px 14px;
+    font-family:'EB Garamond', serif;
+    font-size: 18px;
+    outline: none;
+  }
+  .spell-input:focus{
+    border-color: rgba(232,199,90,0.7);
+    box-shadow: 0 0 0 3px rgba(232,199,90,0.14);
+  }
+  .spell-status{
+    margin-top: 12px;
+    min-height: 26px;
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(246,237,207,0.82);
+  }
+  #screen-reparo .panel{
+    width:min(720px, 94vw);
+    background: transparent;
+    box-shadow: none;
+  }
+  #screen-reparo.reparo-scattered .scatter-item{
+    position: relative;
+    display: inline-block;
+    transition:
+      transform 0.85s cubic-bezier(.2,.8,.2,1),
+      opacity 0.45s ease,
+      filter 0.45s ease;
+    transform:
+      translate(var(--tx, 0px), var(--ty, 0px))
+      rotate(var(--rot, 0deg))
+      scale(var(--scale, 1.02));
+    opacity: 0.96;
+    filter: blur(var(--blur, 0px));
+  }
+  #screen-reparo:not(.reparo-scattered) .scatter-item{
+    transform: none;
+    opacity: 1;
+    filter: none;
+  }
+  #screen-reparo .title{
+    color: var(--burgundy);
+  }
+  .repair-panel{
+    margin-top: 14px;
+    padding: 16px 14px 14px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+  }
+  .repair-object{
+    position: relative;
+    margin: 12px 0 14px;
+    min-height: 170px;
+    border-radius: 18px;
+    border: 2px solid rgba(92,26,27,0.28);
+    background:
+      radial-gradient(circle at 50% 34%, rgba(232,199,90,0.2), rgba(0,0,0,0) 38%),
+      linear-gradient(180deg, rgba(92,26,27,0.10), rgba(31,74,58,0.04));
+    overflow: hidden;
+  }
+  .repair-sigil{
+    position:absolute;
+    inset: 50% auto auto 50%;
+    width: 138px;
+    height: 138px;
+    transform: translate(-50%, -50%);
+  }
+  .repair-ring{
+    position:absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 4px solid rgba(92,26,27,0.68);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08), inset 0 0 0 10px rgba(255,244,193,0.06);
+    transform: scale(0.8);
+    opacity: 0.2;
+    transition: transform 0.9s cubic-bezier(.2,.8,.2,1), opacity 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+  }
+  .repair-ring::before,
+  .repair-ring::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width: 132px;
+    height: 10px;
+    margin-left:-66px;
+    margin-top:-5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent 0 12%, rgba(92,26,27,0.72) 12% 88%, transparent 88% 100%);
+    transform-origin: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.12);
+  }
+  .repair-ring::before{
+    transform: rotate(28deg);
+  }
+  .repair-ring::after{
+    transform: rotate(-36deg);
+  }
+  .repair-piece{
+    position:absolute;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #d6c39a 0%, #b89d69 100%);
+    border: 1px solid rgba(92,26,27,0.22);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14), 0 6px 10px rgba(0,0,0,0.14);
+    left: var(--x);
+    top: var(--y);
+    width: var(--w);
+    height: var(--h);
+    transform: rotate(var(--r));
+    transition:
+      left 0.85s cubic-bezier(.2,.8,.2,1),
+      top 0.85s cubic-bezier(.2,.8,.2,1),
+      transform 0.85s cubic-bezier(.2,.8,.2,1),
+      opacity 0.45s ease,
+      box-shadow 0.45s ease,
+      background 0.45s ease;
+  }
+  .repair-piece::before{
+    content:"";
+    position:absolute;
+    inset: 2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
+  }
+  .repair-object.repaired .repair-piece{
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1.04);
+    opacity: 0;
+    box-shadow: inset 0 0 0 1px rgba(255,244,193,0.18), 0 0 0 rgba(0,0,0,0);
+    background: linear-gradient(180deg, #f0dfb7 0%, #d8c08f 100%);
+  }
+  .repair-object::before,
+  .repair-object::after{
+    content:"";
+    position:absolute;
+    inset: 0;
+    pointer-events:none;
+    transition: opacity 0.25s ease;
+  }
+  .repair-object::before{
+    background:
+      linear-gradient(135deg, transparent 45%, rgba(92,26,27,0.65) 46%, rgba(92,26,27,0.65) 48%, transparent 49%),
+      linear-gradient(225deg, transparent 50%, rgba(92,26,27,0.5) 51%, rgba(92,26,27,0.5) 53%, transparent 54%);
+  }
+  .repair-object::after{
+    background:
+      radial-gradient(circle at 24% 28%, rgba(92,26,27,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 68% 58%, rgba(92,26,27,0.45) 0 2px, transparent 3px),
+      radial-gradient(circle at 45% 74%, rgba(92,26,27,0.45) 0 2px, transparent 3px);
+  }
+  .repair-object.repaired{
+    border-color: rgba(201,162,39,0.6);
+    box-shadow: 0 0 18px rgba(201,162,39,0.18), inset 0 0 18px rgba(255,244,193,0.08);
+  }
+  .repair-object.repaired::before,
+  .repair-object.repaired::after{
+    opacity: 0;
+  }
+  .repair-object.repaired .repair-ring{
+    transform: scale(1);
+    opacity: 1;
+    border-color: rgba(201,162,39,0.72);
+    box-shadow: 0 0 16px rgba(201,162,39,0.18), inset 0 0 0 10px rgba(255,244,193,0.12);
+  }
+  .repair-core{
+    position:absolute;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%) scale(0.65);
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    border: 2px dashed rgba(92,26,27,0.26);
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.85s cubic-bezier(.2,.8,.2,1), border-color 0.4s ease;
+    background: radial-gradient(circle at 50% 50%, rgba(255,244,193,0.9), rgba(232,199,90,0.14) 55%, rgba(0,0,0,0) 72%);
+  }
+  .repair-object.repaired .repair-core{
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    border-color: rgba(201,162,39,0.6);
+  }
+  .repair-progress{
+    display:flex;
+    justify-content:space-between;
+    gap: 12px;
+    align-items:center;
+    margin-top: 14px;
+    flex-wrap:wrap;
+  }
+  .repair-count{
+    font-family:'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(31,26,18,0.78);
+  }
+  .repair-reaction{
+    font-size: 18px;
+    line-height: 1.55;
+    margin: 12px 0 0;
+    padding: 12px 14px;
+    border: 1px solid rgba(92,26,27,0.14);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.45);
+    color: var(--ink);
+  }
+  @media (max-width: 520px){
+    .spell-row{
+      align-items:stretch;
+    }
+    .spell-input,
+    .spell-row .btn{
+      width:100%;
+      flex: 1 1 100%;
+    }
+  }
+
   .house-badge{
     font-family:'Cinzel Decorative', serif;
     font-size: clamp(22px, 4.5vw, 30px);
@@ -415,12 +749,61 @@
   <div class="panel">
     <p class="eyebrow">Rozdział IV &middot; Dogrywka Czapki</p>
     <h1 class="title">Werdykt jeszcze nie. Czas na dogrywkę.</h1>
-    <p class="body-text">Czapka chce dodatkowo sprawdzić charakter Oli. Możesz też losować krótkie przepowiednie ze zwoju.</p>
+    <p class="body-text">Czapka chce dodatkowo sprawdzić charakter Oli. Możesz też losować krótkie przepowiednie ze zwoju albo spakować wyprawkę do Hogwartu.</p>
     <div class="btn-row" style="justify-content:flex-start;">
       <button class="btn alt" id="btn-draw-prophecy">Wylosuj przepowiednię</button>
-      <button class="btn" id="btn-start-bonus">Zacznij dogrywkę</button>
+      <button class="btn" id="btn-start-supply">Spakuj wyprawkę</button>
     </div>
     <div class="prophecy-log" id="prophecy-log"></div>
+  </div>
+</div>
+
+<!-- LUMOS -->
+<div class="overlay hidden" id="screen-lumos">
+  <div class="panel lumos-screen">
+    <p class="eyebrow">Rozdział V &middot; LUMOS</p>
+    <h1 class="title lumos-title">Jest ciemno. Wpisz zaklęcie.</h1>
+    <p class="lumos-hint">Jakie jest zaklęcie, żeby rozświetlić całą stronę.</p>
+    <div class="spell-row">
+      <input id="lumos-input" class="spell-input" type="text" autocomplete="off" spellcheck="false" placeholder="Wpisz zaklęcie..." />
+      <button class="btn alt" id="btn-cast-lumos">Rzuć zaklęcie</button>
+    </div>
+    <p class="spell-status" id="lumos-status">Ciemność jest gęsta. Jedno słowo wystarczy.</p>
+    <div class="spell-row" style="margin-top: 18px;">
+      <button class="btn hidden" id="btn-open-reparo">Przejdź do reparo</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPARO -->
+<div class="overlay hidden" id="screen-reparo">
+  <div class="panel">
+    <p class="eyebrow scatter-item">Rozdział VI &middot; REPARO</p>
+    <h1 class="title scatter-item">Coś jest pęknięte. Napraw to porządnie.</h1>
+    <p class="body-text scatter-item">To nie jest dekoracja. Ta rzecz ma się naprawdę złożyć z powrotem, a nie tylko zniknąć w opisie.</p>
+    <p class="repair-reaction scatter-item" id="repair-reaction">Jakie jest zaklęcie?</p>
+    <div class="repair-panel">
+      <input id="reparo-input" class="spell-input" type="text" autocomplete="off" spellcheck="false" />
+      <div class="spell-row" style="margin-top: 12px;">
+        <button class="btn alt" id="btn-cast-reparo">Napraw</button>
+      </div>
+      <div class="repair-object" id="repair-object" aria-label="Rozbita pieczęć do naprawy">
+        <div class="repair-sigil">
+          <div class="repair-ring"></div>
+        </div>
+        <div class="repair-piece" style="--x: 10%; --y: 18%; --w: 18%; --h: 16%; --r: -18deg;"></div>
+        <div class="repair-piece" style="--x: 28%; --y: 64%; --w: 22%; --h: 14%; --r: 12deg;"></div>
+        <div class="repair-piece" style="--x: 56%; --y: 20%; --w: 16%; --h: 18%; --r: 24deg;"></div>
+        <div class="repair-piece" style="--x: 72%; --y: 58%; --w: 18%; --h: 16%; --r: -10deg;"></div>
+        <div class="repair-piece" style="--x: 42%; --y: 38%; --w: 12%; --h: 12%; --r: 36deg;"></div>
+        <div class="repair-piece" style="--x: 18%; --y: 46%; --w: 14%; --h: 13%; --r: -30deg;"></div>
+        <div class="repair-core"></div>
+      </div>
+      <div class="repair-progress">
+        <p class="repair-count scatter-item" id="repair-count">Stan: uszkodzone</p>
+        <button class="btn hidden" id="btn-continue-bonus">Przejdź dalej</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -448,6 +831,7 @@
       <p>27 lat to wiek, w którym oficjalnie wolno Ci narzekać na kolana — choć jako fizjoterapeutka i tak wiesz o nich więcej niż większość ludzi wie o własnym życiu. To wiek, w którym imprezowanie do drugiej w nocy zamienia się w twardy plan „śpię o dziesiątej, bo rano mam pacjenta”, i nikt Cię o to nie wini.</p>
       <p>Gdybyś naprawdę dostała list z Hogwartu, pewnie i tak byś go odesłała z poprawkami do ergonomii siedzenia na miotle. A jeśli ktoś poda Ci kiedyś ananasa — w jakiejkolwiek formie, na czymkolwiek — wiedz, że stoję za Tobą murem w tej wojnie, niezależnie od tego, ile osób próbuje Cię przekonać, że to „tylko owoc”.</p>
       <p>Życzę Ci roku pełnego dobrych filmów, scen bez nudnych dłużyzn, pacjentów którzy faktycznie robią zalecone ćwiczenia, i zero ananasa na horyzoncie. Wszystkiego najlepszego, Olu — jesteś z gatunku ludzi, dla których chce się robić głupie strony z czapkami o trzeciej w nocy.</p>
+      <p>Na koniec jeszcze jedna zagadka: gdzie czapka chowa swój sekret, gdy nikt nie patrzy, a list do Hogwartu czeka cierpliwie pod rondem? Szukaj tam, gdzie mała szufladka pod kapeluszem ukrywa odpowiedź.</p>
       <p class="signature">Twój brat, Jonasz</p>
     </div>
   </div>
@@ -741,6 +1125,8 @@ const screens = {
   ritual: document.getElementById('screen-ritual'),
   quiz: document.getElementById('screen-quiz'),
   bonusIntro: document.getElementById('screen-bonus-intro'),
+  lumos: document.getElementById('screen-lumos'),
+  reparo: document.getElementById('screen-reparo'),
   result: document.getElementById('screen-result'),
   letter: document.getElementById('screen-letter'),
 };
@@ -805,6 +1191,7 @@ function showScreen(name){
   if (name === 'intro') updateJourney(6, 'Przebudzenie Czapki');
   if (name === 'ritual') updateJourney(20, 'Rytuał Rozpoczęcia');
   if (name === 'bonusIntro') updateJourney(68, 'Dogrywka Czapki');
+  if (name === 'lumos') updateJourney(78, 'Zaklęcie LUMOS');
   if (name === 'result') updateJourney(88, 'Werdykt Domu');
   if (name === 'letter') updateJourney(100, 'List Urodzinowy');
 }
@@ -955,12 +1342,80 @@ const btnNext = document.getElementById('btn-next-q');
 const ritualReaction = document.getElementById('ritual-reaction');
 const btnBeginQuiz = document.getElementById('btn-begin-quiz');
 const prophecyLog = document.getElementById('prophecy-log');
+const lumosInput = document.getElementById('lumos-input');
+const btnCastLumos = document.getElementById('btn-cast-lumos');
+const lumosStatus = document.getElementById('lumos-status');
+const btnOpenReparo = document.getElementById('btn-open-reparo');
+const reparoScreen = document.getElementById('screen-reparo');
+const repairInput = document.getElementById('reparo-input');
+const btnCastReparo = document.getElementById('btn-cast-reparo');
+const repairReaction = document.getElementById('repair-reaction');
+const repairCount = document.getElementById('repair-count');
+const repairObject = document.getElementById('repair-object');
+const btnContinueBonus = document.getElementById('btn-continue-bonus');
+const lumosScreen = document.getElementById('screen-lumos');
+const lumosPanel = document.querySelector('#screen-lumos .lumos-screen');
+const reparoTextItems = Array.from(document.querySelectorAll('#screen-reparo .scatter-item'));
 
 const ritualState = {
   1: false,
   2: false,
   3: false,
 };
+
+const lumosState = {
+  revealed: false,
+  repaired: false,
+};
+
+function renderLumosScene(){
+  lumosState.revealed = false;
+  lumosState.repaired = false;
+  lumosInput.value = '';
+  lumosStatus.textContent = 'Ciemność jest gęsta. Jedno słowo wystarczy.';
+  btnOpenReparo.classList.add('hidden');
+  lumosPanel.classList.remove('revealed');
+  lumosScreen.style.setProperty('--lumos-x', '50%');
+  lumosScreen.style.setProperty('--lumos-y', '32%');
+}
+
+function renderReparoScene(){
+  lumosState.repaired = false;
+  repairInput.value = '';
+  repairReaction.textContent = 'Jakie jest zaklęcie, żeby skleić rozbitą pieczęć i przywrócić jej formę.';
+  repairCount.textContent = 'Stan: uszkodzone';
+  repairObject.classList.remove('repaired');
+  btnContinueBonus.classList.add('hidden');
+  reparoScreen.classList.add('reparo-scattered');
+  scatterReparoText();
+}
+
+function scatterReparoText(){
+  reparoTextItems.forEach((item, index) => {
+    const spread = [
+      { x: -180, y: -70, rot: -14, blur: 0.8 },
+      { x: 220, y: -55, rot: 12, blur: 0.4 },
+      { x: -230, y: 88, rot: -9, blur: 0.6 },
+      { x: 210, y: 160, rot: 11, blur: 0.3 },
+    ][index] || { x: 0, y: 0, rot: 0, blur: 0 };
+    item.style.setProperty('--tx', `${spread.x}px`);
+    item.style.setProperty('--ty', `${spread.y}px`);
+    item.style.setProperty('--rot', `${spread.rot}deg`);
+    item.style.setProperty('--scale', index === 1 ? '1.04' : '1.01');
+    item.style.setProperty('--blur', `${spread.blur}px`);
+  });
+}
+
+function restoreReparoText(){
+  reparoScreen.classList.remove('reparo-scattered');
+  reparoTextItems.forEach((item) => {
+    item.style.removeProperty('--tx');
+    item.style.removeProperty('--ty');
+    item.style.removeProperty('--rot');
+    item.style.removeProperty('--scale');
+    item.style.removeProperty('--blur');
+  });
+}
 
 function updateQuizJourney(){
   if (quizRound === 'main') {
@@ -1083,9 +1538,103 @@ document.getElementById('btn-draw-prophecy').addEventListener('click', () => {
   triggerTalk(1000);
 });
 
-document.getElementById('btn-start-bonus').addEventListener('click', () => {
+document.getElementById('btn-start-supply').addEventListener('click', () => {
+  renderLumosScene();
+  showScreen('lumos');
+  triggerTalk(1100);
+});
+
+btnOpenReparo.addEventListener('click', () => {
+  renderReparoScene();
+  showScreen('reparo');
+  updateJourney(74, 'Zaklęcie naprawy');
+  triggerTalk(900);
+});
+
+btnContinueBonus.addEventListener('click', () => {
   startBonusQuiz();
   triggerTalk(1100);
+});
+
+btnCastLumos.addEventListener('click', () => {
+  const typed = lumosInput.value.trim().toLowerCase();
+  if (typed !== 'lumos') {
+    lumosStatus.textContent = 'To jeszcze nie to. Spróbuj wpisać dokładnie: lumos.';
+    triggerWobble();
+    triggerTalk(500);
+    lumosInput.focus();
+    return;
+  }
+
+  lumosState.revealed = true;
+  lumosStatus.textContent = 'Światło drgnęło. Cała strona się rozjaśniła.';
+  lumosPanel.classList.add('revealed');
+  lumosScreen.style.setProperty('--lumos-x', '50%');
+  lumosScreen.style.setProperty('--lumos-y', '32%');
+  btnOpenReparo.classList.remove('hidden');
+  btnOpenReparo.focus();
+  triggerTalk(1000);
+  triggerWobble();
+});
+
+lumosInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') btnCastLumos.click();
+});
+
+lumosInput.addEventListener('input', () => {
+  if (lumosInput.value.trim().toLowerCase() === 'lumos') {
+    btnCastLumos.click();
+  }
+});
+
+btnCastReparo.addEventListener('click', () => {
+  const typed = repairInput.value.trim().toLowerCase();
+  if (typed !== 'reparo') {
+    repairReaction.textContent = 'To jeszcze nie naprawia. Spróbuj wpisać dokładnie: reparo.';
+    repairCount.textContent = 'Stan: wciąż uszkodzone';
+    triggerWobble();
+    triggerTalk(500);
+    repairInput.focus();
+    return;
+  }
+
+  lumosState.repaired = true;
+  restoreReparoText();
+  repairReaction.textContent = 'Reparo zadziałało. Klocki zbierają się do środka.';
+  repairCount.textContent = 'Stan: składanie...';
+  repairObject.classList.add('repaired');
+  setTimeout(() => {
+    repairReaction.textContent = 'Pieczęć jest cała i stoi złożona z powrotem.';
+    repairCount.textContent = 'Stan: naprawione';
+    btnContinueBonus.classList.remove('hidden');
+    triggerTalk(1000);
+    triggerWobble();
+  }, 900);
+});
+
+repairInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') btnCastReparo.click();
+});
+
+repairInput.addEventListener('input', () => {
+  if (repairInput.value.trim().toLowerCase() === 'reparo') {
+    btnCastReparo.click();
+  }
+});
+
+lumosScreen.addEventListener('mousemove', (event) => {
+  if (lumosState.revealed) return;
+  const rect = lumosScreen.getBoundingClientRect();
+  const x = ((event.clientX - rect.left) / rect.width) * 100;
+  const y = ((event.clientY - rect.top) / rect.height) * 100;
+  lumosScreen.style.setProperty('--lumos-x', `${Math.max(0, Math.min(100, x))}%`);
+  lumosScreen.style.setProperty('--lumos-y', `${Math.max(0, Math.min(100, y))}%`);
+});
+
+lumosScreen.addEventListener('mouseleave', () => {
+  if (lumosState.revealed) return;
+  lumosScreen.style.setProperty('--lumos-x', '50%');
+  lumosScreen.style.setProperty('--lumos-y', '32%');
 });
 
 btnNext.addEventListener('click', () => {
